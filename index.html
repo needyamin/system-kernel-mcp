@@ -10,33 +10,120 @@
   <nav class="navbar navbar-dark bg-primary">
     <div class="container">
       <span class="navbar-brand mb-0 h1">SystemKernelMCP</span>
+      <a href="https://github.com/needyamin/system-kernel-mcp" class="text-white" target="_blank">GitHub</a>
     </div>
   </nav>
   <div class="container py-4">
     <h1>Documentation</h1>
-    <p class="lead">Cross-platform MCP server for terminal, OS info, and processes.</p>
+    <p class="lead">82 tools for terminal, pentesting, Docker, Kubernetes, VMs, BIOS, kernel. Windows, Linux, macOS.</p>
+    <p><span class="badge bg-primary">82 tools</span> <span class="badge bg-success">Cross-platform</span></p>
 
     <div class="card mb-4">
-      <div class="card-header h5">Tools</div>
+      <div class="card-header h5">Tools by Category</div>
       <div class="card-body">
         <table class="table table-striped table-sm">
           <thead><tr><th>Tool</th><th>Description</th></tr></thead>
           <tbody>
+            <tr><td colspan="2" class="table-secondary"><strong>Terminal & OS</strong></td></tr>
             <tr><td><code>execute_terminal_command</code></td><td>Run shell commands (timeout 300s)</td></tr>
-            <tr><td><code>run_commands</code></td><td>Run multiple commands in sequence</td></tr>
+            <tr><td><code>run_commands</code></td><td>Run multiple commands</td></tr>
             <tr><td><code>get_os_info</code></td><td>OS, kernel, arch, Python, CWD</td></tr>
             <tr><td><code>get_running_processes</code></td><td>Top processes by CPU</td></tr>
             <tr><td><code>get_current_user</code></td><td>Username and UID</td></tr>
-            <tr><td><code>read_file</code></td><td>Read file contents</td></tr>
-            <tr><td><code>list_directory</code></td><td>List files/folders</td></tr>
-            <tr><td><code>write_file</code></td><td>Write or append to file</td></tr>
-            <tr><td><code>file_exists</code></td><td>Check if path exists</td></tr>
-            <tr><td><code>ping_host</code></td><td>Ping a host</td></tr>
-            <tr><td><code>check_port</code></td><td>Check if TCP port is open</td></tr>
-            <tr><td><code>get_network_info</code></td><td>IP addresses, interfaces</td></tr>
-            <tr><td><code>get_environment_vars</code></td><td>List env vars</td></tr>
-            <tr><td><code>check_tool_installed</code></td><td>Check if CLI tool exists</td></tr>
             <tr><td><code>get_services</code></td><td>Running services</td></tr>
+            <tr><td><code>get_system_uptime</code></td><td>System uptime</td></tr>
+            <tr><td><code>get_scheduled_tasks</code></td><td>Cron/Task Scheduler</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Files</strong></td></tr>
+            <tr><td><code>read_file</code></td><td>Read file</td></tr>
+            <tr><td><code>write_file</code></td><td>Write or append</td></tr>
+            <tr><td><code>list_directory</code></td><td>List files/folders</td></tr>
+            <tr><td><code>file_exists</code></td><td>Check path exists</td></tr>
+            <tr><td><code>file_hash</code></td><td>MD5/SHA256 checksum</td></tr>
+            <tr><td><code>grep_files</code></td><td>Search in files</td></tr>
+            <tr><td><code>diff_files</code></td><td>Compare two files</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Network</strong></td></tr>
+            <tr><td><code>ping_host</code></td><td>Ping host</td></tr>
+            <tr><td><code>check_port</code></td><td>TCP port open check</td></tr>
+            <tr><td><code>get_network_info</code></td><td>IP, interfaces</td></tr>
+            <tr><td><code>dns_lookup</code></td><td>DNS A/MX/NS/TXT</td></tr>
+            <tr><td><code>http_request</code></td><td>Fetch URL</td></tr>
+            <tr><td><code>ssl_cert_info</code></td><td>SSL cert details</td></tr>
+            <tr><td><code>list_listening_ports</code></td><td>Listening ports</td></tr>
+            <tr><td><code>get_arp_table</code></td><td>ARP table</td></tr>
+            <tr><td><code>get_routing_table</code></td><td>Routing table</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Utils</strong></td></tr>
+            <tr><td><code>get_environment_vars</code></td><td>List env vars</td></tr>
+            <tr><td><code>check_tool_installed</code></td><td>Check CLI tool</td></tr>
+            <tr><td><code>base64_encode</code>/<code>decode</code></td><td>Base64</td></tr>
+            <tr><td><code>decode_jwt</code></td><td>Decode JWT</td></tr>
+            <tr><td><code>timestamp_convert</code></td><td>Unix ↔ date</td></tr>
+            <tr><td><code>generate_uuid</code></td><td>UUID v4</td></tr>
+            <tr><td><code>get_disk_usage</code></td><td>Disk space</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Docker</strong></td></tr>
+            <tr><td><code>docker_ps</code></td><td>List containers</td></tr>
+            <tr><td><code>docker_images</code></td><td>List images</td></tr>
+            <tr><td><code>docker_logs</code></td><td>Container logs</td></tr>
+            <tr><td><code>docker_exec</code></td><td>Run cmd in container</td></tr>
+            <tr><td><code>docker_inspect</code></td><td>Container details</td></tr>
+            <tr><td><code>docker_stats</code></td><td>CPU/memory stats</td></tr>
+            <tr><td><code>docker_run</code></td><td>Run new container</td></tr>
+            <tr><td><code>docker_compose_up</code>/<code>down</code></td><td>Compose</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Kubernetes</strong></td></tr>
+            <tr><td><code>k8s_pods</code></td><td>List pods</td></tr>
+            <tr><td><code>k8s_services</code></td><td>List services</td></tr>
+            <tr><td><code>k8s_deployments</code></td><td>List deployments</td></tr>
+            <tr><td><code>k8s_nodes</code></td><td>List nodes</td></tr>
+            <tr><td><code>k8s_logs</code></td><td>Pod logs</td></tr>
+            <tr><td><code>k8s_describe</code></td><td>Describe resource</td></tr>
+            <tr><td><code>k8s_exec</code></td><td>Exec in pod</td></tr>
+            <tr><td><code>k8s_apply</code></td><td>Apply manifest</td></tr>
+            <tr><td><code>k8s_delete</code></td><td>Delete resource</td></tr>
+            <tr><td><code>k8s_context</code></td><td>Current context</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>VM / Virtualization</strong></td></tr>
+            <tr><td><code>detect_virtualization</code></td><td>Detect if in VM</td></tr>
+            <tr><td><code>hyperv_list_vms</code></td><td>Hyper-V VMs</td></tr>
+            <tr><td><code>hyperv_vm_state</code></td><td>VM state</td></tr>
+            <tr><td><code>hyperv_start_vm</code>/<code>stop_vm</code></td><td>Hyper-V control</td></tr>
+            <tr><td><code>virtualbox_list_vms</code></td><td>VirtualBox VMs</td></tr>
+            <tr><td><code>virtualbox_vm_info</code></td><td>VM info</td></tr>
+            <tr><td><code>virtualbox_start_vm</code>/<code>stop_vm</code></td><td>VirtualBox control</td></tr>
+            <tr><td><code>vmware_list_vms</code></td><td>VMware VMs</td></tr>
+            <tr><td><code>vmware_run_in_vm</code></td><td>Run cmd in VMware</td></tr>
+            <tr><td><code>wsl_list</code></td><td>WSL distros</td></tr>
+            <tr><td><code>wsl_run</code></td><td>Run in WSL</td></tr>
+            <tr><td><code>wsl_shutdown</code></td><td>Shutdown WSL</td></tr>
+            <tr><td><code>qemu_list_vms</code></td><td>QEMU/KVM VMs</td></tr>
+            <tr><td><code>qemu_vm_info</code></td><td>VM info</td></tr>
+            <tr><td><code>qemu_start_vm</code>/<code>stop_vm</code></td><td>QEMU control</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>BIOS / UEFI</strong></td></tr>
+            <tr><td><code>bios_info</code></td><td>BIOS vendor, version</td></tr>
+            <tr><td><code>uefi_vars_list</code></td><td>List UEFI vars</td></tr>
+            <tr><td><code>uefi_var_read</code></td><td>Read UEFI var</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Kernel</strong></td></tr>
+            <tr><td><code>kernel_version</code></td><td>Kernel version</td></tr>
+            <tr><td><code>kernel_sysctl_get</code>/<code>set</code></td><td>Sysctl params</td></tr>
+            <tr><td><code>kernel_sysctl_all</code></td><td>All params</td></tr>
+            <tr><td><code>kernel_modules_list</code></td><td>Loaded modules</td></tr>
+            <tr><td><code>kernel_module_load</code>/<code>unload</code></td><td>Load/unload module</td></tr>
+            <tr><td><code>kernel_params</code></td><td>Boot cmdline</td></tr>
+            <tr><td colspan="2"><strong>Git / GitHub / DevOps</strong></td></tr>
+            <tr><td><code>git_*</code></td><td>status, clone, pull, push, commit, log, branch, diff</td></tr>
+            <tr><td><code>gh_*</code></td><td>repos, pr, issues (gh CLI)</td></tr>
+            <tr><td><code>docker_login</code>/<code>push</code>/<code>tag</code></td><td>Docker Hub</td></tr>
+            <tr><td><code>ssh_run</code>/<code>scp_copy</code>/<code>rsync_copy</code></td><td>Deploy</td></tr>
+            <tr><td><code>curl_request</code></td><td>HTTP</td></tr>
+            <tr><td><code>url_encode</code>/<code>hex_encode</code>/<code>json_format</code></td><td>Encoding</td></tr>
+            <tr><td><code>nmap_scan</code>/<code>port_scan_range</code></td><td>Port scan</td></tr>
+            <tr><td><code>hash_generate</code>/<code>hash_crack_check</code></td><td>Hash</td></tr>
+            <tr><td><code>subdomain_enum</code></td><td>Subdomain check</td></tr>
+            <tr><td colspan="2"><strong>AI / Modern</strong></td></tr>
+            <tr><td><code>openai_chat</code>/<code>ollama_chat</code></td><td>LLM chat</td></tr>
+            <tr><td><code>sqlite_query</code>/<code>graphql_query</code></td><td>Data queries</td></tr>
+            <tr><td><code>whois_lookup</code>/<code>redis_cli</code></td><td>WHOIS, Redis</td></tr>
+            <tr><td><code>terraform_plan</code>/<code>apply</code></td><td>Infra</td></tr>
+            <tr><td><code>aws_cli</code>/<code>gcloud_cli</code></td><td>Cloud</td></tr>
+            <tr><td><code>python_run</code>/<code>venv_create</code>/<code>pip_install</code></td><td>Dev</td></tr>
+            <tr><td><code>password_generate</code>/<code>secret_scan</code>/<code>webhook_send</code></td><td>Security</td></tr>
           </tbody>
         </table>
       </div>
@@ -62,6 +149,7 @@ pip install mcp</code></pre>
     }
   }
 }</code></pre>
+        <p class="mt-2 mb-0 small">Use absolute path if workspaceFolder fails: <code>args: ["C:\\path\\to\\system_mcp.py"]</code></p>
       </div>
     </div>
 
@@ -69,12 +157,22 @@ pip install mcp</code></pre>
       <div class="card-header h5">Use Cases</div>
       <div class="card-body">
         <ul class="mb-0">
-          <li><strong>Pentesting:</strong> Port checks, ping, network info, process/service enumeration</li>
-          <li><strong>Automation:</strong> Run commands, batch scripts, file ops, env vars</li>
-          <li><strong>Non-technical:</strong> Plain-language tool descriptions, sensible defaults</li>
+          <li><strong>Pentesting:</strong> Port scan, DNS, SSL cert, JWT decode, network enum</li>
+          <li><strong>Automation:</strong> Commands, file ops, batch scripts, env vars</li>
+          <li><strong>DevOps:</strong> Docker, Kubernetes, VM control</li>
+          <li><strong>System:</strong> BIOS, kernel, modules, boot params</li>
         </ul>
       </div>
     </div>
+
+    <div class="card mb-4">
+      <div class="card-header h5">Requirements</div>
+      <div class="card-body">
+        <p class="mb-1">Python 3.10+</p>
+        <p class="mb-0 small text-muted">Optional: docker, kubectl, VirtualBox, VMware, Hyper-V, WSL, libvirt</p>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header h5">Platforms</div>
       <div class="card-body">
