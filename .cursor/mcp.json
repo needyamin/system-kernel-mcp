@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "SystemKernelMCP": {
+      "command": "python",
+      "args": ["${workspaceFolder}/system_mcp.py"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
