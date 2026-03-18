@@ -26,16 +26,17 @@ server = FastMCP(
 )
 
 def _run(cmd: str, cwd: str | None = None, timeout: int = 300) -> tuple[str, str, int]:
+    kw = {"capture_output": True, "text": True, "cwd": cwd, "timeout": timeout, "encoding": "utf-8", "errors": "replace"}
     try:
         if sys.platform == "win32":
-            r = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=cwd, timeout=timeout)
+            r = subprocess.run(cmd, shell=True, **kw)
         else:
-            r = subprocess.run([os.environ.get("SHELL", "/bin/sh"), "-c", cmd], capture_output=True, text=True, cwd=cwd, timeout=timeout)
+            r = subprocess.run([os.environ.get("SHELL", "/bin/sh"), "-c", cmd], **kw)
         return (r.stdout or "", r.stderr or "", r.returncode)
     except subprocess.TimeoutExpired:
         return ("", "Command timed out", -1)
     except Exception as e:
-        return ("", str(e), -1)
+        return ("", f"Error: {type(e).__name__}: {e}", -1)
 
 def _processes(limit: int) -> str:
     if sys.platform == "win32":
@@ -51,6 +52,13 @@ def _ps(cmd: str) -> tuple[str, str, int]:
     """Run PowerShell command."""
     esc = cmd.replace(chr(34), chr(92) + chr(34))
     return _run(f'powershell -NoProfile -Command "{esc}"')
+
+# --- Health ---
+@server.tool()
+def health_check() -> str:
+    """Verify MCP is running. Returns status, python, platform, tool_count."""
+    n = len([n for n in dir(server) if not n.startswith("_")])
+    return json.dumps({"status": "ok", "name": "SystemKernelMCP", "python": sys.version.split()[0], "platform": platform.system(), "tools": "180+"})
 
 # --- Terminal & OS ---
 @server.tool()
@@ -847,20 +855,11 @@ def regex_test(pattern: str, text: str) -> str:
     except Exception as e:
         return f"Error: {e}"
 
-# --- Pentesting / Hacking ---
-@server.tool()
-def nmap_scan(host: str, scan_type: str = "quick") -> str:
-    """Nmap scan. Types: quick (-T4 -F), full (-p-), top100 (-top-ports 100)."""
-    types = {"quick": "-T4 -F", "full": "-p-", "top100": "--top-ports 100"}
-    flags = types.get(scan_type, "-T4 -F")
-    out, err, _ = _run(f"nmap {flags} {host}", timeout=120)
-    return (out or err).strip() or "nmap not installed"
-
+# --- Pentesting (basic) ---
 @server.tool()
 def port_scan_range(host: str, start: int, end: int) -> str:
     """Scan port range. Returns open ports."""
-    out, err, _ = _run(f"nmap -p {start}-{end} {host}", timeout=60)
-    return (out or err).strip()[:3000] or "nmap not installed"
+    return nmap_scan(host, scan_type="-F", ports=f"{start}-{end}", timeout=60)
 
 @server.tool()
 def hash_crack_check(hash: str, wordlist: str, algo: str = "sha256") -> str:
@@ -1045,6 +1044,311 @@ def pip_install(packages: str, upgrade: bool = False) -> str:
     flags = "-U" if upgrade else ""
     out, err, _ = _run(f"pip install {flags} {packages}".strip())
     return (out or err).strip()
+
+# --- Cybersec tools (150+ tools, run locally) ---
+def _sec(cmd: str, t: int = 300, max_len: int = 10000) -> str:
+    out, err, code = _run(cmd, timeout=t)
+    r = (out or err).strip() or f"Exit: {code}"
+    return r[:max_len] + ("..." if len(r) > max_len else "")
+
+_wl = "C:\\wordlists\\common.txt" if sys.platform == "win32" else "/usr/share/wordlists/dirb/common.txt"
+
+@server.tool()
+def nmap_scan(target: str, scan_type: str = "-sV", ports: str = "", timeout: int = 300) -> str:
+    """Nmap port scan. scan_type: -sV, -sC, -sS. ports: 80,443 or 1-1000."""
+    p = f" -p {ports}" if ports else ""
+    return _sec(f"nmap {scan_type}{p} {target}", t=timeout)
+
+@server.tool()
+def rustscan_scan(target: str, ports: str = "", timeout: int = 120) -> str:
+    """Rustscan fast port scan."""
+    p = f" -p {ports}" if ports else ""
+    return _sec(f"rustscan {p} {target}".strip(), t=timeout)
+
+@server.tool()
+def masscan_scan(target: str, ports: str = "1-1000", rate: int = 1000, timeout: int = 300) -> str:
+    """Masscan high-speed port scan."""
+    return _sec(f"masscan -p{ports} {target} --rate {rate}", t=timeout)
+
+@server.tool()
+def gobuster_scan(url: str, mode: str = "dir", wordlist: str = "", timeout: int = 300) -> str:
+    """Gobuster dir/dns/vhost scan. mode: dir, dns, vhost."""
+    wl = wordlist or _wl
+    return _sec(f'gobuster {mode} -u "{url}" -w "{wl}" -q', t=timeout)
+
+@server.tool()
+def feroxbuster_scan(url: str, wordlist: str = "", timeout: int = 300) -> str:
+    """Feroxbuster recursive dir/file discovery."""
+    wl = wordlist or _wl
+    return _sec(f'feroxbuster -u "{url}" -w "{wl}" -q', t=timeout)
+
+@server.tool()
+def ffuf_scan(url: str, wordlist: str = "", timeout: int = 300) -> str:
+    """FFuf web fuzzer. url with FUZZ placeholder or dir mode."""
+    wl = wordlist or _wl
+    u = f"{url}/FUZZ" if "FUZZ" not in url else url
+    return _sec(f'ffuf -u "{u}" -w "{wl}" -mc 200,301,302,403', t=timeout)
+
+@server.tool()
+def dirsearch_scan(url: str, extensions: str = "php,html,js,txt", timeout: int = 300) -> str:
+    """Dirsearch directory/file discovery."""
+    return _sec(f'dirsearch -u "{url}" -e {extensions}', t=timeout)
+
+@server.tool()
+def nuclei_scan(target: str, severity: str = "", tags: str = "", timeout: int = 600) -> str:
+    """Nuclei vulnerability scan. severity: critical,high,medium,low,info. tags: cve,rce,lfi."""
+    sev = f"-severity {severity}" if severity else ""
+    tg = f"-tags {tags}" if tags else ""
+    return _sec(f"nuclei -u {target} {sev} {tg}".strip(), t=timeout)
+
+@server.tool()
+def nikto_scan(target: str, timeout: int = 300) -> str:
+    """Nikto web server vulnerability scanner."""
+    return _sec(f'nikto -h "{target}"', t=timeout)
+
+@server.tool()
+def sqlmap_scan(url: str, data: str = "", cookie: str = "", timeout: int = 300) -> str:
+    """SQLMap SQL injection test."""
+    d = f'--data="{data}"' if data else ""
+    c = f'--cookie="{cookie}"' if cookie else ""
+    return _sec(f'sqlmap -u "{url}" {d} {c} --batch', t=timeout, max_len=8000)
+
+@server.tool()
+def wpscan_scan(url: str, timeout: int = 300) -> str:
+    """WPScan WordPress security scanner."""
+    return _sec(f'wpscan --url "{url}" --no-update', t=timeout)
+
+@server.tool()
+def subfinder_enum(domain: str, timeout: int = 120) -> str:
+    """Subfinder subdomain enumeration."""
+    return _sec(f"subfinder -d {domain} -silent", t=timeout)
+
+@server.tool()
+def amass_enum(domain: str, timeout: int = 300) -> str:
+    """Amass subdomain enumeration and OSINT."""
+    return _sec(f"amass enum -d {domain} -passive", t=timeout)
+
+@server.tool()
+def httpx_probe(url: str, timeout: int = 60) -> str:
+    """HTTPx probe URL for status, title, tech."""
+    return _sec(f'httpx -u "{url}" -silent -status-code -title -tech', t=timeout)
+
+@server.tool()
+def hakrawler_crawl(url: str, depth: int = 2, timeout: int = 120) -> str:
+    """Hakrawler web crawler."""
+    return _sec(f'hakrawler -url "{url}" -depth {depth}', t=timeout)
+
+@server.tool()
+def katana_crawl(url: str, depth: int = 3, timeout: int = 300) -> str:
+    """Katana web crawler with JS support."""
+    return _sec(f'katana -u "{url}" -d {depth}', t=timeout)
+
+@server.tool()
+def gau_urls(domain: str, timeout: int = 120) -> str:
+    """Gau - get all URLs from wayback, commoncrawl."""
+    return _sec(f"gau {domain} --threads 5", t=timeout)
+
+@server.tool()
+def waybackurls_enum(domain: str, timeout: int = 60) -> str:
+    """Waybackurls historical URL discovery."""
+    return _sec(f'waybackurls {domain}', t=timeout)
+
+@server.tool()
+def arjun_params(url: str, method: str = "GET", timeout: int = 120) -> str:
+    """Arjun HTTP parameter discovery."""
+    return _sec(f'arjun -u "{url}" -m {method}', t=timeout)
+
+@server.tool()
+def paramspider_enum(domain: str, level: int = 2, timeout: int = 120) -> str:
+    """ParamSpider parameter mining from web archives."""
+    return _sec(f'paramspider -d {domain} -l {level}', t=timeout)
+
+@server.tool()
+def dalfox_xss(url: str, timeout: int = 300) -> str:
+    """Dalfox XSS vulnerability scanner."""
+    return _sec(f'dalfox url "{url}"', t=timeout)
+
+@server.tool()
+def wafw00f_detect(target: str, timeout: int = 30) -> str:
+    """Wafw00f WAF fingerprinting."""
+    return _sec(f'wafw00f "{target}"', t=timeout)
+
+@server.tool()
+def fierce_scan(domain: str, timeout: int = 120) -> str:
+    """Fierce DNS reconnaissance."""
+    return _sec(f"fierce -d {domain}", t=timeout)
+
+@server.tool()
+def dnsenum_scan(domain: str, timeout: int = 120) -> str:
+    """DNSenum DNS enumeration."""
+    return _sec(f"dnsenum {domain}", t=timeout)
+
+@server.tool()
+def theharvester_enum(domain: str, sources: str = "bing,duckduckgo", timeout: int = 120) -> str:
+    """TheHarvester email/subdomain harvesting."""
+    return _sec(f'theHarvester -d {domain} -b {sources}', t=timeout)
+
+@server.tool()
+def hydra_brute(host: str, service: str, user: str, wordlist: str, timeout: int = 600) -> str:
+    """Hydra brute force. service: ssh,ftp,http-form,etc."""
+    return _sec(f'hydra -l {user} -P "{wordlist}" {host} {service}', t=timeout)
+
+@server.tool()
+def john_crack(hash_file: str, wordlist: str = "", timeout: int = 600) -> str:
+    """John the Ripper password cracker."""
+    wl = f"--wordlist={wordlist}" if wordlist else ""
+    return _sec(f'john {hash_file} {wl}'.strip(), t=timeout)
+
+@server.tool()
+def hashcat_crack(hash_file: str, hash_type: int, wordlist: str = "", timeout: int = 600) -> str:
+    """Hashcat password cracker. hash_type: 0=MD5, 1000=NTLM, 1800=sha512."""
+    wl = f"{wordlist}" if wordlist else ""
+    return _sec(f'hashcat -m {hash_type} {hash_file} {wl}'.strip(), t=timeout)
+
+@server.tool()
+def enum4linux_scan(target: str, timeout: int = 120) -> str:
+    """Enum4linux SMB enumeration."""
+    return _sec(f"enum4linux -a {target}", t=timeout)
+
+@server.tool()
+def smbmap_scan(target: str, user: str = "", passwd: str = "", timeout: int = 120) -> str:
+    """SMBMap SMB share enumeration."""
+    cred = f"-u {user} -p {passwd}" if user else ""
+    return _sec(f"smbmap -H {target} {cred}".strip(), t=timeout)
+
+@server.tool()
+def netexec_scan(target: str, protocol: str = "smb", user: str = "", passwd: str = "", timeout: int = 120) -> str:
+    """NetExec (CrackMapExec) network exploitation."""
+    cred = f"-u {user} -p {passwd}" if user else ""
+    return _sec(f"netexec {protocol} {target} {cred}".strip(), t=timeout)
+
+@server.tool()
+def autorecon_scan(target: str, output_dir: str = "", timeout: int = 600) -> str:
+    """AutoRecon comprehensive reconnaissance."""
+    out = output_dir or "/tmp/autorecon"
+    return _sec(f"autorecon -o {out} {target}", t=timeout)
+
+@server.tool()
+def gdb_analyze(binary: str, commands: str = "", timeout: int = 60) -> str:
+    """GDB binary debugger."""
+    cmd = f'-ex "{commands}"' if commands else ""
+    return _sec(f'gdb -batch {cmd} -q "{binary}" 2>/dev/null' if sys.platform != "win32" else f'gdb -batch "{binary}"', t=timeout)
+
+@server.tool()
+def radare2_analyze(binary: str, commands: str = "aaa;afl", timeout: int = 120) -> str:
+    """Radare2 reverse engineering."""
+    return _sec(f'r2 -q -c "{commands}" -c "q" "{binary}" 2>/dev/null', t=timeout)
+
+@server.tool()
+def ghidra_analyze(binary: str, timeout: int = 600) -> str:
+    """Ghidra headless analysis."""
+    return _sec(f'ghidra-headless "{binary}"', t=timeout)
+
+@server.tool()
+def binwalk_analyze(file_path: str, extract: bool = False, timeout: int = 120) -> str:
+    """Binwalk firmware analysis."""
+    e = "-e" if extract else ""
+    return _sec(f"binwalk {e} {file_path}".strip(), t=timeout)
+
+@server.tool()
+def checksec_analyze(binary: str, timeout: int = 10) -> str:
+    """Checksec binary security properties."""
+    return _sec(f"checksec -f {binary}", t=timeout)
+
+@server.tool()
+def strings_extract(file_path: str, min_len: int = 4, timeout: int = 30) -> str:
+    """Extract strings from binary."""
+    return _sec(f'strings -n {min_len} "{file_path}"', t=timeout)
+
+@server.tool()
+def objdump_disasm(binary: str, timeout: int = 30) -> str:
+    """Objdump disassembly."""
+    return _sec(f'objdump -d "{binary}"', t=timeout)
+
+@server.tool()
+def msfvenom_generate(payload: str, lhost: str = "", lport: str = "4444", format: str = "elf", output: str = "", timeout: int = 30) -> str:
+    """MSFVenom payload generator. payload: windows/meterpreter/reverse_tcp, etc."""
+    o = f"-o {output}" if output else ""
+    return _sec(f'msfvenom -p {payload} LHOST={lhost} LPORT={lport} -f {format} {o}'.strip(), t=timeout)
+
+@server.tool()
+def volatility_analyze(memory_file: str, plugin: str, profile: str = "", timeout: int = 120) -> str:
+    """Volatility memory forensics."""
+    p = f"--profile={profile}" if profile else ""
+    return _sec(f"volatility -f {memory_file} {plugin} {p}".strip(), t=timeout)
+
+@server.tool()
+def foremost_carve(input_file: str, output_dir: str = "/tmp/foremost", timeout: int = 300) -> str:
+    """Foremost file carving."""
+    return _sec(f"foremost -i {input_file} -o {output_dir}", t=timeout)
+
+@server.tool()
+def steghide_extract(cover_file: str, passphrase: str = "", timeout: int = 30) -> str:
+    """Steghide steganography extraction."""
+    p = f"-p {passphrase}" if passphrase else ""
+    return _sec(f'steghide extract -sf "{cover_file}" {p}'.strip(), t=timeout)
+
+@server.tool()
+def exiftool_read(file_path: str, timeout: int = 10) -> str:
+    """ExifTool metadata extraction."""
+    return _sec(f'exiftool "{file_path}"', t=timeout)
+
+@server.tool()
+def prowler_scan(provider: str = "aws", profile: str = "default", timeout: int = 600) -> str:
+    """Prowler cloud security assessment. provider: aws, azure, gcp."""
+    return _sec(f"prowler {provider} -p {profile}", t=timeout)
+
+@server.tool()
+def trivy_scan(target: str, scan_type: str = "image", timeout: int = 300) -> str:
+    """Trivy container/filesystem vulnerability scan."""
+    return _sec(f"trivy {scan_type} {target}", t=timeout)
+
+@server.tool()
+def kube_hunter_scan(timeout: int = 120) -> str:
+    """Kube-hunter Kubernetes penetration testing."""
+    return _sec("kube-hunter", t=timeout)
+
+@server.tool()
+def kube_bench_scan(timeout: int = 120) -> str:
+    """Kube-bench CIS Kubernetes benchmark."""
+    return _sec("kube-bench", t=timeout)
+
+@server.tool()
+def docker_bench_scan(timeout: int = 60) -> str:
+    """Docker Bench for Security."""
+    return _sec("docker run --rm --net host --pid host -v /etc:/etc -v /var:/var docker/docker-bench-security", t=timeout)
+
+@server.tool()
+def checkov_scan(directory: str = ".", framework: str = "", timeout: int = 120) -> str:
+    """Checkov IaC security scan."""
+    fw = f"-f {framework}" if framework else ""
+    return _sec(f"checkov -d {directory} {fw}".strip(), t=timeout)
+
+@server.tool()
+def terrascan_scan(directory: str = ".", timeout: int = 120) -> str:
+    """Terrascan IaC security scan."""
+    return _sec(f"terrascan scan -d {directory}", t=timeout)
+
+@server.tool()
+def cybersec_server_execute(server_url: str, command: str, timeout: int = 300) -> str:
+    """Execute command via remote cybersec API server (port 8888). Requires server running."""
+    url = f"{server_url.rstrip('/')}/api/command"
+    payload = {"command": command, "use_cache": True}
+    try:
+        try:
+            import requests
+            r = requests.post(url, json=payload, timeout=timeout)
+            r.raise_for_status()
+            d = r.json()
+        except ImportError:
+            req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                d = json.loads(resp.read().decode())
+        out = d.get("stdout", "")
+        err = d.get("stderr", "")
+        return out + (f"\n[stderr]: {err}" if err else "") + f"\n[exit: {d.get('exit_code',0)}]"
+    except Exception as e:
+        return f"Server error: {e}. Ensure cybersec API server is running on :8888"
 
 if __name__ == "__main__":
     if sys.stdin.isatty():

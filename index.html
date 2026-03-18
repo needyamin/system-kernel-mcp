@@ -15,8 +15,8 @@
   </nav>
   <div class="container py-4">
     <h1>Documentation</h1>
-    <p class="lead">130+ tools for terminal, Git, Docker, Kubernetes, VMs, BIOS, kernel, AI, cloud, pentesting. Windows, Linux, macOS.</p>
-    <p><span class="badge bg-primary">130+ tools</span> <span class="badge bg-success">Cross-platform</span></p>
+    <p class="lead">180+ tools for terminal, Git, Docker, Kubernetes, VMs, BIOS, kernel, cybersec (50+ pentesting), AI, cloud. Windows, Linux, macOS.</p>
+    <p><span class="badge bg-primary">180+ tools</span> <span class="badge bg-success">Cross-platform</span></p>
 
     <div class="card mb-4">
       <div class="card-header h5">Tools by Category</div>
@@ -24,6 +24,8 @@
         <table class="table table-striped table-sm">
           <thead><tr><th>Tool</th><th>Description</th></tr></thead>
           <tbody>
+            <tr><td colspan="2" class="table-secondary"><strong>Health</strong></td></tr>
+            <tr><td><code>health_check</code></td><td>Verify MCP status (JSON)</td></tr>
             <tr><td colspan="2" class="table-secondary"><strong>Terminal & OS</strong></td></tr>
             <tr><td><code>execute_terminal_command</code></td><td>Run shell commands (timeout 300s)</td></tr>
             <tr><td><code>run_commands</code></td><td>Run multiple commands</td></tr>
@@ -112,10 +114,26 @@
             <tr><td><code>docker_login</code>/<code>push</code>/<code>tag</code></td><td>Docker Hub</td></tr>
             <tr><td><code>ssh_run</code>/<code>scp_copy</code>/<code>rsync_copy</code></td><td>Deploy</td></tr>
             <tr><td><code>curl_request</code></td><td>HTTP</td></tr>
-            <tr><td><code>url_encode</code>/<code>hex_encode</code>/<code>json_format</code></td><td>Encoding</td></tr>
-            <tr><td><code>nmap_scan</code>/<code>port_scan_range</code></td><td>Port scan</td></tr>
-            <tr><td><code>hash_generate</code>/<code>hash_crack_check</code></td><td>Hash</td></tr>
-            <tr><td><code>subdomain_enum</code></td><td>Subdomain check</td></tr>
+            <tr><td><code>url_encode</code>/<code>url_decode</code>/<code>hex_encode</code>/<code>hex_decode</code>/<code>json_format</code></td><td>Encoding</td></tr>
+            <tr><td colspan="2" class="table-secondary"><strong>Cybersec (50+ tools)</strong></td></tr>
+            <tr><td><code>nmap_scan</code>/<code>rustscan_scan</code>/<code>masscan_scan</code></td><td>Port scanning</td></tr>
+            <tr><td><code>gobuster_scan</code>/<code>feroxbuster_scan</code>/<code>ffuf_scan</code>/<code>dirsearch_scan</code></td><td>Dir/file discovery</td></tr>
+            <tr><td><code>nuclei_scan</code>/<code>nikto_scan</code>/<code>sqlmap_scan</code>/<code>wpscan_scan</code></td><td>Vuln scanning</td></tr>
+            <tr><td><code>subfinder_enum</code>/<code>amass_enum</code>/<code>httpx_probe</code></td><td>Recon</td></tr>
+            <tr><td><code>hakrawler_crawl</code>/<code>katana_crawl</code>/<code>gau_urls</code>/<code>waybackurls_enum</code></td><td>Crawling</td></tr>
+            <tr><td><code>arjun_params</code>/<code>paramspider_enum</code>/<code>dalfox_xss</code>/<code>wafw00f_detect</code></td><td>Web testing</td></tr>
+            <tr><td><code>fierce_scan</code>/<code>dnsenum_scan</code>/<code>theharvester_enum</code></td><td>DNS/OSINT</td></tr>
+            <tr><td><code>hydra_brute</code>/<code>john_crack</code>/<code>hashcat_crack</code></td><td>Password cracking</td></tr>
+            <tr><td><code>enum4linux_scan</code>/<code>smbmap_scan</code>/<code>netexec_scan</code></td><td>SMB/Windows</td></tr>
+            <tr><td><code>autorecon_scan</code></td><td>Auto recon</td></tr>
+            <tr><td><code>gdb_analyze</code>/<code>radare2_analyze</code>/<code>ghidra_analyze</code>/<code>binwalk_analyze</code></td><td>Binary/RE</td></tr>
+            <tr><td><code>checksec_analyze</code>/<code>strings_extract</code>/<code>objdump_disasm</code>/<code>msfvenom_generate</code></td><td>Binary tools</td></tr>
+            <tr><td><code>volatility_analyze</code>/<code>foremost_carve</code>/<code>steghide_extract</code>/<code>exiftool_read</code></td><td>Forensics</td></tr>
+            <tr><td><code>prowler_scan</code>/<code>trivy_scan</code>/<code>kube_hunter_scan</code>/<code>kube_bench_scan</code>/<code>docker_bench_scan</code></td><td>Cloud security</td></tr>
+            <tr><td><code>checkov_scan</code>/<code>terrascan_scan</code></td><td>IaC security</td></tr>
+            <tr><td><code>cybersec_server_execute</code></td><td>Remote API (port 8888)</td></tr>
+            <tr><td><code>port_scan_range</code></td><td>Port range (wraps nmap_scan)</td></tr>
+            <tr><td><code>hash_generate</code>/<code>hash_crack_check</code>/<code>subdomain_enum</code></td><td>Hash, wordlist check, subdomain (no CLI)</td></tr>
             <tr><td colspan="2"><strong>AI / Modern</strong></td></tr>
             <tr><td><code>openai_chat</code>/<code>ollama_chat</code></td><td>LLM chat</td></tr>
             <tr><td><code>sqlite_query</code>/<code>graphql_query</code></td><td>Data queries</td></tr>
@@ -132,7 +150,7 @@
     <div class="card mb-4">
       <div class="card-header h5">Quick Start</div>
       <div class="card-body">
-        <p class="mb-2"><strong>What is this?</strong> MCP server = your AI gets 130+ tools. Your AI client (Cursor, Claude) starts it automatically.</p>
+        <p class="mb-2"><strong>What is this?</strong> MCP server = your AI gets 180+ tools. Your AI client (Cursor, Claude) starts it automatically.</p>
         <p class="mb-2"><strong>Do NOT run <code>python system_mcp.py</code> manually.</strong> It will show a message and exit. Use from Cursor/Claude instead.</p>
         <ol class="mb-2">
           <li>Install: <code>python -m venv venv</code> → activate → <code>pip install mcp</code></li>
@@ -174,7 +192,7 @@ pip install mcp</code></pre>
       <div class="card-header h5">Use Cases</div>
       <div class="card-body">
         <ul class="mb-0">
-          <li><strong>Pentesting:</strong> Port scan, DNS, SSL cert, JWT decode, network enum</li>
+          <li><strong>Cybersec:</strong> nmap, nuclei, gobuster, sqlmap, subfinder, hydra, ghidra, trivy, 50+ tools</li>
           <li><strong>Automation:</strong> Commands, file ops, batch scripts, env vars</li>
           <li><strong>DevOps:</strong> Docker, Kubernetes, VM control</li>
           <li><strong>System:</strong> BIOS, kernel, modules, boot params</li>
@@ -196,7 +214,7 @@ pip install mcp</code></pre>
       <div class="card-header h5">Requirements</div>
       <div class="card-body">
         <p class="mb-1">Python 3.10+</p>
-        <p class="mb-0 small text-muted">Optional: docker, kubectl, gh, git, nmap, terraform, aws, gcloud, VirtualBox, VMware, Hyper-V, WSL</p>
+        <p class="mb-0 small text-muted">Optional: docker, kubectl, gh, git, nmap, terraform, aws, gcloud, VirtualBox, VMware, Hyper-V, WSL. Cybersec: nmap, nuclei, gobuster, sqlmap, subfinder, hydra, etc.</p>
       </div>
     </div>
 

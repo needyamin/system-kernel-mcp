@@ -1,6 +1,6 @@
 # SystemKernelMCP
 
-**130+ tools** for full system control: terminal, Git, Docker, Kubernetes, VMs, BIOS, kernel, pentesting, AI, cloud. Works with **Cursor, Claude Desktop, Windsurf**, and any MCP client.
+**180+ tools** for full system control: terminal, Git, Docker, Kubernetes, VMs, BIOS, kernel, cybersec (50+ pentesting tools), AI, cloud. Works with **Cursor, Claude Desktop, Windsurf**, and any MCP client.
 
 [![GitHub](https://img.shields.io/badge/GitHub-needyamin%2Fsystem--kernel--mcp-blue)](https://github.com/needyamin/system-kernel-mcp)
 
@@ -8,7 +8,7 @@
 
 ## What is this?
 
-SystemKernelMCP is an **MCP (Model Context Protocol) server**. It gives your AI assistant (Cursor, Claude, etc.) 130+ tools to control your system: run terminal commands, manage Docker, check ports, read files, and more.
+SystemKernelMCP is an **MCP (Model Context Protocol) server**. It gives your AI assistant (Cursor, Claude, etc.) 180+ tools to control your system: run terminal commands, manage Docker, pentest (nmap, nuclei, sqlmap, etc.), read files, and more.
 
 **You do NOT run it yourself.** Your AI client (Cursor, Claude) starts it automatically when you ask for a tool.
 
@@ -28,7 +28,8 @@ python -m venv venv
 # Mac/Linux:          source venv/bin/activate
 
 # Install MCP
-pip install mcp
+pip install -r requirements.txt
+# or: pip install mcp
 ```
 
 ### Step 2: Add to your AI client
@@ -58,7 +59,7 @@ pip install mcp
 3. In chat, ask: *"Run get_os_info"* or *"Ping google.com"*
 4. Approve the tool when prompted
 
-**Health check:** If `get_os_info` returns your OS info, it's working.
+**Health check:** Call `health_check` or `get_os_info`. If you get a response, it's working.
 
 ---
 
@@ -83,7 +84,7 @@ This is a **stdio server**. It talks over stdin/stdout. Your AI client starts it
 
 ---
 
-## Tools (130+)
+## Tools (180+)
 
 | Category | Examples |
 |----------|----------|
@@ -97,7 +98,7 @@ This is a **stdio server**. It talks over stdin/stdout. Your AI client starts it
 | **GitHub** | `gh_repos`, `gh_pr_list`, `gh_issue_list` |
 | **VMs** | `hyperv_list_vms`, `virtualbox_list_vms`, `wsl_run`, `qemu_list_vms` |
 | **BIOS/Kernel** | `bios_info`, `kernel_sysctl_get`, `kernel_modules_list` |
-| **Pentesting** | `nmap_scan`, `port_scan_range`, `hash_crack_check`, `subdomain_enum` |
+| **Cybersec** | `nmap_scan`, `port_scan_range`, `nuclei_scan`, `gobuster_scan`, `sqlmap_scan`, `subfinder_enum`, `hydra_brute`, `ghidra_analyze`, `trivy_scan`, `cybersec_server_execute` |
 | **AI** | `openai_chat`, `ollama_chat` |
 | **Cloud** | `terraform_plan`, `aws_cli`, `gcloud_cli` |
 | **Dev** | `python_run`, `venv_create`, `pip_install` |
@@ -121,3 +122,4 @@ Full list: [index.html](index.html)
 
 - **Python 3.10+**
 - **Optional** (for specific tools): docker, kubectl, gh, git, nmap, terraform, aws, gcloud, redis-cli, whois, VirtualBox, VMware, Hyper-V, WSL
+- **Optional** (cybersec tools): nmap, rustscan, masscan, gobuster, feroxbuster, ffuf, dirsearch, nuclei, nikto, sqlmap, wpscan, subfinder, amass, httpx, hakrawler, katana, gau, waybackurls, arjun, paramspider, dalfox, wafw00f, fierce, dnsenum, theHarvester, hydra, john, hashcat, enum4linux, smbmap, netexec, autorecon, gdb, radare2, ghidra, binwalk, checksec, volatility, foremost, steghide, exiftool, prowler, trivy, kube-hunter, kube-bench, checkov, terrascan
