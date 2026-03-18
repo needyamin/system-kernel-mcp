@@ -1047,4 +1047,8 @@ def pip_install(packages: str, upgrade: bool = False) -> str:
     return (out or err).strip()
 
 if __name__ == "__main__":
+    if sys.stdin.isatty():
+        print("SystemKernelMCP is a stdio server. Run from an MCP client (Cursor, Claude, Windsurf, etc.), not directly.")
+        print("Add to your client's MCP config (e.g. .cursor/mcp.json) and restart.")
+        sys.exit(0)
     server.run(transport="stdio")

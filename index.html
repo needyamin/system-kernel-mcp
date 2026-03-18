@@ -130,9 +130,26 @@
     </div>
 
     <div class="card mb-4">
+      <div class="card-header h5">Quick Start</div>
+      <div class="card-body">
+        <p class="mb-2"><strong>What is this?</strong> MCP server = your AI gets 130+ tools. Your AI client (Cursor, Claude) starts it automatically.</p>
+        <p class="mb-2"><strong>Do NOT run <code>python system_mcp.py</code> manually.</strong> It will show a message and exit. Use from Cursor/Claude instead.</p>
+        <ol class="mb-2">
+          <li>Install: <code>python -m venv venv</code> → activate → <code>pip install mcp</code></li>
+          <li>Add MCP config (below) to your client</li>
+          <li>Restart Cursor/Claude, enable SystemKernelMCP</li>
+          <li>In chat: "Run get_os_info" or "Ping google.com"</li>
+        </ol>
+        <p class="mb-0 small"><strong>Health check:</strong> Call <code>get_os_info</code>. If you get OS info back, it works.</p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
       <div class="card-header h5">Install</div>
       <div class="card-body">
         <pre class="bg-dark text-light p-3 rounded"><code>python -m venv venv
+# Windows CMD: .\venv\Scripts\activate
+# Git Bash: source venv/Scripts/activate
 pip install mcp</code></pre>
       </div>
     </div>
@@ -166,10 +183,20 @@ pip install mcp</code></pre>
     </div>
 
     <div class="card mb-4">
+      <div class="card-header h5">Troubleshooting</div>
+      <div class="card-body">
+        <ul class="mb-0 small">
+          <li><strong>No tools in Cursor?</strong> Restart Cursor, enable in Settings → MCP</li>
+          <li><strong>Invalid JSON when running manually?</strong> Normal. Don't run manually.</li>
+          <li><strong>venv activate fails (Git Bash)?</strong> Use <code>source venv/Scripts/activate</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card mb-4">
       <div class="card-header h5">Requirements</div>
       <div class="card-body">
         <p class="mb-1">Python 3.10+</p>
-        <p class="mb-0 small text-muted">Optional: docker, kubectl, VirtualBox, VMware, Hyper-V, WSL, libvirt</p>
+        <p class="mb-0 small text-muted">Optional: docker, kubectl, gh, git, nmap, terraform, aws, gcloud, VirtualBox, VMware, Hyper-V, WSL</p>
       </div>
     </div>
 

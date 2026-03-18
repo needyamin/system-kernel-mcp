@@ -1,9 +1,3 @@
 {
-  "mcpServers": {
-    "SystemKernelMCP": {
-      "command": "python",
-      "args": ["c:\\Users\\needy\\Desktop\\MCP SERVER\\system_mcp.py"],
-      "cwd": "c:\\Users\\needy\\Desktop\\MCP SERVER"
-    }
-  }
+  "mcpServers": {}
 }
